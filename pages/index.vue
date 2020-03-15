@@ -1,7 +1,6 @@
 <template>
     <div id="app" class="container">
-        <renderer>
-        </renderer>
+        <renderer></renderer>
         <box left>
             <h1 class="title">
                 Bitmap Generator
@@ -20,7 +19,6 @@
 </template>
 
 <script>
-    import logo from '~/components/logo.vue'
     import description from '~/components/description.vue'
     import renderer from '~/components/renderer.vue'
     import controls from '~/components/controls.vue'
@@ -28,7 +26,6 @@
 
     export default {
         components: {
-            logo,
             description,
             renderer,
             controls,
