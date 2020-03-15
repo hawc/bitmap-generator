@@ -33,7 +33,6 @@ export default {
     },
     methods: {
         changeSettings(settings) {
-            console.log(settings, 'change');
             this.settings = settings;
         },
         triggerAction(action) {

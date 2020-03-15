@@ -51,7 +51,6 @@ export default {
             fontbase: 16,
             imageData: null,
             generationDisabled: false,
-            hide: false,
             canvasWidth: this.settings && this.settings.canvasWidth ? this.settings.canvasWidth : 1,
             canvasHeight: this.settings && this.settings.canvasHeight ? this.settings.canvasHeight : 1,
         };
@@ -83,7 +82,6 @@ export default {
             return (cm / 2.54) * 96;
         },
         insertMessage(settings) {
-            console.log('inset', settings);
             const ctx = this.$refs.canvas.getContext('2d');
             const matrix = this.$refs.svg1.createSVGMatrix();
             // Clear the canvas
@@ -102,7 +100,7 @@ export default {
                     pFill.setTransform(matrix.scale(1 / settings.zoom));
                     ctx.fillStyle = pFill;
                     ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-                    this.finalizeBitmap(settings, ctx, settings.message, x, y);
+                    this.finalizeBitmap(settings, ctx, x, y);
                 }
                 break;
             case 'useImage':
@@ -112,12 +110,12 @@ export default {
                         const img = new Image();
                         img.onload = () => {
                             ctx.drawImage(img, x - ((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) / 2), y - (((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width) / 2), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width);
-                            this.finalizeBitmap(settings, ctx, settings.message, x, y);
+                            this.finalizeBitmap(settings, ctx, x, y);
                         };
                         img.src = event.target.result;
                     };
-                    if (this.$refs.image.files[0] && ['image/jpeg', 'image/png', 'image/gif'].includes(this.$refs.image.files[0].type)) {
-                        reader.readAsDataURL(this.$refs.image.files[0]);
+                    if (settings.imageData && ['image/jpeg', 'image/png', 'image/gif'].includes(settings.imageData.type)) {
+                        reader.readAsDataURL(settings.imageData);
                         break;
                     }
                 }
@@ -131,13 +129,13 @@ export default {
         },
         finalizeBitmap(settings, ctx, x, y) {
             ctx.fillStyle = settings.color;
-            const fontSize = (settings.fontbase * settings.fontsize / settings.zoom) / window.devicePixelRatio;
+            const fontSize = (this.fontbase * settings.fontsize / settings.zoom) / window.devicePixelRatio;
             ctx.font = `${ fontSize }px ${ settings.font }, Georgia`;
             ctx.shadowColor = settings.blurColor;
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             ctx.shadowBlur = settings.blur;
-            ctx.fillText(settings.message, x, y * settings.yTranslate);
+            ctx.fillText(settings.textContent, x, y * settings.yTranslate);
             const ditheredImage = this.monochrome(ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight), settings.treshold, settings.algorithm);
             createImageBitmap(ditheredImage).then(ditheredImageBmp => {
                 ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
