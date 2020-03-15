@@ -4,8 +4,11 @@
         </renderer>
         <box left>
             <h1 class="title">
-                bitmap-generator
+                Bitmap Generator
             </h1>
+            <h2>
+                A dithering playground.
+            </h2>
         </box>
         <box left>
             <description></description>

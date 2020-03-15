@@ -93,7 +93,31 @@
             <button type="button" @click="reset" class="light">Reset</button><!--
          --><button type="button" @click="print">Print</button><!--
          --><button type="button" @click="download">Download</button>
-            <a hidden href="#" id="dl" download="image.png">Download</a>
         </div>
     </div>
 </template>
+
+<script>
+    export default {
+        data() {
+            return {
+                textContent: 'It works 😍',
+                fontsize: 3,
+                font: 'Futura',
+                zoom: 2,
+                background: 'useColor',
+                pattern: 1,
+                image: null,
+                color: '#ff0000',
+                blur: '0',
+                blurColor: '#000',
+                backgroundColor: '#dedede',
+                treshold: 129,
+                dimensions: 1,
+                yTranslate: 1,
+                algorithm: 'atkinsons',
+                // gameBoyMode: false,
+            }
+        }
+    }
+</script>
