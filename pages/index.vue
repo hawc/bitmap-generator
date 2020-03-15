@@ -1,7 +1,7 @@
 <template>
     <div id="app" class="container">
-        <renderer></renderer>
-        <box left>
+        <renderer :settings="settings"></renderer>
+        <box :position="'left'">
             <h1 class="title">
                 Bitmap Generator
             </h1>
@@ -12,17 +12,17 @@
         <box left>
             <description></description>
         </box>
-        <box right>
-            <controls></controls>
+        <box :position="'right'">
+            <controls @change-settings="changeSettings"></controls>
         </box>
     </div>
 </template>
 
 <script>
-    import description from '~/components/description.vue'
-    import renderer from '~/components/renderer.vue'
-    import controls from '~/components/controls.vue'
-    import box from '~/components/box.vue'
+    import description from '~/components/description';
+    import renderer from '~/components/renderer';
+    import controls from '~/components/controls';
+    import box from '~/components/box';
 
     export default {
         components: {
@@ -30,6 +30,16 @@
             renderer,
             controls,
             box,
+        },
+        data() {
+            return {
+                settings: {},
+            }
+        },
+        methods: {
+            changeSettings(settings) {
+                this.settings = settings;
+            }
         }
     }
 </script>

@@ -57,7 +57,7 @@
             <label for="image">
                 <input name="background" type="radio" id="useImage" value="useImage" v-model="background"/><span>Image:</span>
             </label><!--
-         --><input type="file" ref="image" id="image" name="image" v-model="image" :disabled="background !== 'useImage'"/>
+         --><input type="file" ref="image" id="image" name="image" @change="this.image = value" :disabled="background !== 'useImage'"/>
         </div>
         <h2>Rendering styles</h2>
         <div class="setting">
@@ -118,6 +118,40 @@
                 algorithm: 'atkinsons',
                 // gameBoyMode: false,
             }
-        }
+        },
+        watch: {
+            $data: {
+                handler: (val, oldVal) => {
+                    console.log(val);
+                },
+                deep: true,
+            }
+        },
     }
 </script>
+
+<style scoped lang="scss">
+    .setting {
+        font-size: 14px;
+        &:not(:last-child) {
+            margin-bottom: 10px;
+        }
+    }
+    input[type="checkbox"] {
+        width: 20px;
+        margin: 0;
+    }
+    label {
+        display: inline-block;
+        width: 110px;
+        padding-right: 10px;
+        input[type="checkbox"] + span & {
+            width: 80px;
+        }
+    }
+    label + * {
+        display: inline-block;
+        width: calc(100% - 110px);
+        margin: 0;
+    }
+</style>
