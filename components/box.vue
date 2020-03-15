@@ -25,6 +25,7 @@ export default {
         background: white;
         border-radius: 3px;
         box-shadow: 0 0 40px rgba(0,0,0,0.25);
+        transition: box-shadow 0.3s, opacity 0.3s;
         &--left {
             left: 20px;
         }
