@@ -1,18 +1,19 @@
 <template>
-    <div class="box" :class="position === 'left' ? 'box--left' : 'box--right'">
-        <slot></slot>
+    <div class="box"
+         :class="position === 'left' ? 'box--left' : 'box--right'">
+        <slot />
     </div>
 </template>
 
 <script>
-    export default {
-        props: {
-            position: {
-                type: String,
-                default: 'left',
-            }
-        }
-    }
+export default {
+    props: {
+        position: {
+            type: String,
+            default: 'left',
+        },
+    },
+}
 </script>
 
 <style scoped lang="scss">

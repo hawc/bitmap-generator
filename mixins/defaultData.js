@@ -1,5 +1,5 @@
 const defaultData = {
-    data() {
+    data () {
         return {
             textContent: 'It works 😍',
             fontsize: 3,
@@ -21,4 +21,4 @@ const defaultData = {
     },
 }
 
-export { defaultData };
+export { defaultData }

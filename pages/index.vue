@@ -1,7 +1,9 @@
 <template>
-    <div id="app" class="container">
-        <renderer :settings="settings"></renderer>
-        <box :position="'left'">
+    <div id="app"
+         class="container">
+        <renderer ref="renderer"
+                  :settings="settings" />
+        <box>
             <h1 class="title">
                 Bitmap Generator
             </h1>
@@ -9,39 +11,43 @@
                 A dithering playground.
             </h2>
         </box>
-        <box left>
-            <description></description>
+        <box>
+            <description />
         </box>
         <box :position="'right'">
-            <controls @change-settings="changeSettings"></controls>
+            <controls @change-settings="changeSettings"
+                      @action="triggerAction" />
         </box>
     </div>
 </template>
 
 <script>
-    import description from '~/components/description';
-    import renderer from '~/components/renderer';
-    import controls from '~/components/controls';
-    import box from '~/components/box';
+import description from '~/components/description'
+import renderer from '~/components/renderer'
+import controls from '~/components/controls'
+import box from '~/components/box'
 
-    export default {
-        components: {
-            description,
-            renderer,
-            controls,
-            box,
-        },
-        data() {
-            return {
-                settings: {},
-            }
-        },
-        methods: {
-            changeSettings(settings) {
-                this.settings = settings;
-            }
+export default {
+    components: {
+        description,
+        renderer,
+        controls,
+        box,
+    },
+    data () {
+        return {
+            settings: null,
         }
-    }
+    },
+    methods: {
+        changeSettings (settings) {
+            this.settings = settings
+        },
+        triggerAction (action) {
+            this.$refs.renderer[action]()
+        },
+    },
+}
 </script>
 
 <style>
