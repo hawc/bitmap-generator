@@ -35,7 +35,8 @@
 </template>
 
 <script>
-    import algorithms from '~/mixins/algorithms';
+    import { defaultData } from '~/mixins/defaultData';
+    import { algorithms } from '~/mixins/algorithms';
 
     export default {
         mixins: [algorithms],
@@ -202,6 +203,12 @@
                 this.fireChange();
             }
         },
+        mounted() {
+            this.resizeCanvas();
+            window.addEventListener('resize', () => { 
+                this.resizeCanvas();
+             });
+        }
     }
 </script>
 

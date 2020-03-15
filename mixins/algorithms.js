@@ -116,4 +116,4 @@ const algorithms = {
     }
 }
 
-export { algorithms as default };
+export { algorithms };
