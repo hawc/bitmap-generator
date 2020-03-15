@@ -15,7 +15,10 @@
 </template>
 
 <script>
+    import algorithms from '~/mixins/algorithms';
+
     export default {
+        mixins: [algorithms],
         data() {
             return {
                 fontbase: 16,
