@@ -235,8 +235,8 @@ export default {
     },
     watch: {
         $data: {
-            handler: (val, oldVal) => {
-                console.log(val);
+            handler(settings) {
+                this.$emit('change-settings', settings);
             },
             deep: true,
         },
@@ -246,6 +246,9 @@ export default {
             this.image = value;
             this.imageData = this.$refs.image.files[0];
         },
+    },
+    mounted() {
+        this.$emit('change-settings', this.$data);
     },
 };
 </script>

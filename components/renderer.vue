@@ -5,7 +5,7 @@
              src
              alt="">
         <svg ref="svg1" />
-        <a id="dl"
+        <a ref="downloadButton"
            hidden
            href="#"
            download="image.png">Download</a>
@@ -56,22 +56,8 @@ export default {
             canvasHeight: this.settings && this.settings.canvasHeight ? this.settings.canvasHeight : 1,
         };
     },
-    watch: {
-        settings() {
-            this.fireChange();
-        },
-    },
-    mounted() {
-        if (this.settings) {
-            this.resizeCanvas();
-            window.addEventListener('resize', () => {
-                this.resizeCanvas();
-            });
-        }
-    },
     methods: {
         getCanvasWidth(dimensions) {
-            console.log(dimensions);
             switch (JSON.parse(dimensions)) {
             case 1:
                 return this.getPxFromCm(15);
@@ -83,7 +69,6 @@ export default {
             }
         },
         getCanvasHeight(dimensions) {
-            console.log(dimensions);
             switch (JSON.parse(dimensions)) {
             case 1:
                 return this.getPxFromCm(10);
@@ -97,8 +82,8 @@ export default {
         getPxFromCm(cm) {
             return (cm / 2.54) * 96;
         },
-        insertMessage(settings, message) {
-            console.log(settings, 'a');
+        insertMessage(settings) {
+            console.log('inset', settings);
             const ctx = this.$refs.canvas.getContext('2d');
             const matrix = this.$refs.svg1.createSVGMatrix();
             // Clear the canvas
@@ -141,10 +126,10 @@ export default {
             default:
                 ctx.fillStyle = settings.backgroundColor;
                 ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-                this.finalizeBitmap(settings, ctx, settings.message, x, y);
+                this.finalizeBitmap(settings, ctx, x, y);
             }
         },
-        finalizeBitmap(settings, ctx, message, x, y) {
+        finalizeBitmap(settings, ctx, x, y) {
             ctx.fillStyle = settings.color;
             const fontSize = (settings.fontbase * settings.fontsize / settings.zoom) / window.devicePixelRatio;
             ctx.font = `${ fontSize }px ${ settings.font }, Georgia`;
@@ -152,7 +137,7 @@ export default {
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             ctx.shadowBlur = settings.blur;
-            ctx.fillText(message, x, y * settings.yTranslate);
+            ctx.fillText(settings.message, x, y * settings.yTranslate);
             const ditheredImage = this.monochrome(ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight), settings.treshold, settings.algorithm);
             createImageBitmap(ditheredImage).then(ditheredImageBmp => {
                 ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -181,18 +166,12 @@ export default {
             ctx.mozImageSmoothingEnabled = false;
             ctx.webkitImageSmoothingEnabled = false;
             ctx.msImageSmoothingEnabled = false;
-            for (let i = 0; i < 256; i++) {
-                this.lumR[i] = i * 0.299;
-                this.lumG[i] = i * 0.587;
-                this.lumB[i] = i * 0.114;
-            }
             this.fireChange();
         },
         download() {
             const image = this.$refs.canvas.toDataURL('image/png');
-            const dlButton = document.querySelector('#dl');
-            dlButton.setAttribute('href', image);
-            dlButton.click();
+            this.$refs.downloadButton.setAttribute('href', image);
+            this.$refs.downloadButton.click();
         },
         print() {
             const dataUrl = this.$refs.canvas.toDataURL();
@@ -212,8 +191,24 @@ export default {
             printWindow.document.close();
         },
         reset() {
-            // Object.assign(this.$data, getDefaultData())
+            // Object.assign(this.$data, getDefaultData());
         },
+    },
+    watch: {
+        settings: {
+            handler() {
+                this.fireChange();
+            },
+            deep: true,
+        },
+    },
+    mounted() {
+        if (this.settings) {
+            this.resizeCanvas();
+            window.addEventListener('resize', () => {
+                this.resizeCanvas();
+            });
+        }
     },
 };
 </script>

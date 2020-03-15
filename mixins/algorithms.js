@@ -1,17 +1,19 @@
 // dithering algorithms from https://github.com/meemoo/meemooapp/blob/master/src/nodes/image-monochrome-worker.js
 const algorithms = {
-    data: {
-        bayerThresholdMap: [
-            [15, 135, 45, 165],
-            [195, 75, 225, 105],
-            [60, 180, 30, 150],
-            [240, 120, 210, 90],
-        ],
-        lumR: [],
-        lumG: [],
-        lumB: [],
-        col1: [162, 185, 61],
-        col2: [26, 54, 20],
+    data() {
+        return {
+            bayerThresholdMap: [
+                [15, 135, 45, 165],
+                [195, 75, 225, 105],
+                [60, 180, 30, 150],
+                [240, 120, 210, 90],
+            ],
+            lumR: [],
+            lumG: [],
+            lumB: [],
+            col1: [162, 185, 61],
+            col2: [26, 54, 20],
+        };
     },
     methods: {
         monochrome(imageData, threshold, type) {
@@ -113,6 +115,13 @@ const algorithms = {
             }
             return imageData;
         },
+    },
+    beforeMount() {
+        for (let i = 0; i < 256; i++) {
+            this.lumR[i] = i * 0.299;
+            this.lumG[i] = i * 0.587;
+            this.lumB[i] = i * 0.114;
+        }
     },
 };
 
