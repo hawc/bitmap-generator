@@ -14,106 +14,106 @@ const algorithms = {
         col2: [26, 54, 20],
     },
     methods: {
-        monochrome (imageData, threshold, type) {
-            const imageDataLength = imageData.data.length
-            let newPixel, err
+        monochrome(imageData, threshold, type) {
+            const imageDataLength = imageData.data.length;
+            let newPixel, err;
 
             // Greyscale luminance (sets r pixels to luminance of rgb)
             for (let i = 0; i <= imageDataLength; i += 4) {
-                imageData.data[i] = Math.floor(this.lumR[imageData.data[i]] + this.lumG[imageData.data[i + 1]] + this.lumB[imageData.data[i + 2]])
+                imageData.data[i] = Math.floor(this.lumR[imageData.data[i]] + this.lumG[imageData.data[i + 1]] + this.lumB[imageData.data[i + 2]]);
             }
-            const w = imageData.width
+            const w = imageData.width;
             // return imageData;//test
             switch (type) {
             case 'bayer':
-                imageData = this.bayer(imageData, imageDataLength, threshold, w, newPixel, err)
-                break
+                imageData = this.bayer(imageData, imageDataLength, threshold, w, newPixel, err);
+                break;
             case 'floydsteinberg':
-                imageData = this.floydsteinberg(imageData, imageDataLength, threshold, w, newPixel, err)
-                break
+                imageData = this.floydsteinberg(imageData, imageDataLength, threshold, w, newPixel, err);
+                break;
             case 'none':
-                imageData = this.noDithering(imageData, imageDataLength, threshold, w, newPixel, err)
-                break
+                imageData = this.noDithering(imageData, imageDataLength, threshold, w, newPixel, err);
+                break;
             case 'atkinsons':
             default:
-                imageData = this.atkinsons(imageData, imageDataLength, threshold, w, newPixel, err)
+                imageData = this.atkinsons(imageData, imageDataLength, threshold, w, newPixel, err);
             }
 
-            return imageData
+            return imageData;
         },
-        bayer (imageData, imageDataLength, threshold, w) {
+        bayer(imageData, imageDataLength, threshold, w) {
             // 4x4 Bayer ordered dithering algorithm
-            let lightPixel
+            let lightPixel;
             for (let currentPixel = 0; currentPixel <= imageDataLength; currentPixel += 4) {
-                const x = currentPixel / 4 % w
-                const y = Math.floor(currentPixel / 4 / w)
-                const map = Math.floor((imageData.data[currentPixel] + this.bayerThresholdMap[x % 4][y % 4]) / 2)
-                lightPixel = (map < threshold)
-                imageData.data[currentPixel] = lightPixel ? 0 : 255
-                imageData = this.equalizeColors(imageData, currentPixel, lightPixel)
+                const x = currentPixel / 4 % w;
+                const y = Math.floor(currentPixel / 4 / w);
+                const map = Math.floor((imageData.data[currentPixel] + this.bayerThresholdMap[x % 4][y % 4]) / 2);
+                lightPixel = (map < threshold);
+                imageData.data[currentPixel] = lightPixel ? 0 : 255;
+                imageData = this.equalizeColors(imageData, currentPixel, lightPixel);
             }
-            return imageData
+            return imageData;
         },
-        floydsteinberg (imageData, imageDataLength, threshold, w, newPixel, err) {
+        floydsteinberg(imageData, imageDataLength, threshold, w, newPixel, err) {
             // Floyd–Steinberg dithering algorithm
-            let lightPixel
+            let lightPixel;
             for (let currentPixel = 0; currentPixel <= imageDataLength; currentPixel += 4) {
-                lightPixel = imageData.data[currentPixel] < threshold
-                newPixel = lightPixel ? 0 : 255
-                err = Math.floor((imageData.data[currentPixel] - newPixel) / 16)
-                imageData.data[currentPixel] = newPixel
+                lightPixel = imageData.data[currentPixel] < threshold;
+                newPixel = lightPixel ? 0 : 255;
+                err = Math.floor((imageData.data[currentPixel] - newPixel) / 16);
+                imageData.data[currentPixel] = newPixel;
 
-                imageData.data[currentPixel + 4] += err * 7
-                imageData.data[currentPixel + 4 * w - 4] += err * 3
-                imageData.data[currentPixel + 4 * w] += err * 5
-                imageData.data[currentPixel + 4 * w + 4] += err * 1
-                imageData = this.equalizeColors(imageData, currentPixel, lightPixel)
+                imageData.data[currentPixel + 4] += err * 7;
+                imageData.data[currentPixel + 4 * w - 4] += err * 3;
+                imageData.data[currentPixel + 4 * w] += err * 5;
+                imageData.data[currentPixel + 4 * w + 4] += err * 1;
+                imageData = this.equalizeColors(imageData, currentPixel, lightPixel);
             }
-            return imageData
+            return imageData;
         },
-        atkinsons (imageData, imageDataLength, threshold, w, newPixel, err) {
+        atkinsons(imageData, imageDataLength, threshold, w, newPixel, err) {
             // Bill Atkinson's dithering algorithm
-            let lightPixel
+            let lightPixel;
             for (let currentPixel = 0; currentPixel <= imageDataLength; currentPixel += 4) {
-                lightPixel = imageData.data[currentPixel] < threshold
-                newPixel = lightPixel ? 0 : 255
-                err = Math.floor((imageData.data[currentPixel] - newPixel) / 8)
-                imageData.data[currentPixel] = newPixel
+                lightPixel = imageData.data[currentPixel] < threshold;
+                newPixel = lightPixel ? 0 : 255;
+                err = Math.floor((imageData.data[currentPixel] - newPixel) / 8);
+                imageData.data[currentPixel] = newPixel;
 
-                imageData.data[currentPixel + 4] += err
-                imageData.data[currentPixel + 8] += err
-                imageData.data[currentPixel + 4 * w - 4] += err
-                imageData.data[currentPixel + 4 * w] += err
-                imageData.data[currentPixel + 4 * w + 4] += err
-                imageData.data[currentPixel + 8 * w] += err
-                imageData = this.equalizeColors(imageData, currentPixel, lightPixel)
+                imageData.data[currentPixel + 4] += err;
+                imageData.data[currentPixel + 8] += err;
+                imageData.data[currentPixel + 4 * w - 4] += err;
+                imageData.data[currentPixel + 4 * w] += err;
+                imageData.data[currentPixel + 4 * w + 4] += err;
+                imageData.data[currentPixel + 8 * w] += err;
+                imageData = this.equalizeColors(imageData, currentPixel, lightPixel);
             }
-            return imageData
+            return imageData;
         },
-        noDithering (imageData, imageDataLength, threshold) {
+        noDithering(imageData, imageDataLength, threshold) {
             for (let currentPixel = 0; currentPixel <= imageDataLength; currentPixel += 4) {
-                imageData.data[currentPixel] = imageData.data[currentPixel] < threshold ? 0 : 255
-                imageData = this.equalizeColors(imageData, currentPixel)
+                imageData.data[currentPixel] = imageData.data[currentPixel] < threshold ? 0 : 255;
+                imageData = this.equalizeColors(imageData, currentPixel);
             }
-            return imageData
+            return imageData;
         },
-        equalizeColors (imageData, currentPixel, lightPixel) {
+        equalizeColors(imageData, currentPixel, lightPixel) {
             if (this.gameBoyMode) {
                 if (!lightPixel) {
-                    imageData.data[currentPixel] = this.col1[0]
-                    imageData.data[currentPixel + 1] = this.col1[1]
-                    imageData.data[currentPixel + 2] = this.col1[2]
+                    imageData.data[currentPixel] = this.col1[0];
+                    imageData.data[currentPixel + 1] = this.col1[1];
+                    imageData.data[currentPixel + 2] = this.col1[2];
                 } else {
-                    imageData.data[currentPixel] = this.col2[0]
-                    imageData.data[currentPixel + 1] = this.col2[1]
-                    imageData.data[currentPixel + 2] = this.col2[2]
+                    imageData.data[currentPixel] = this.col2[0];
+                    imageData.data[currentPixel + 1] = this.col2[1];
+                    imageData.data[currentPixel + 2] = this.col2[2];
                 }
             } else {
-                imageData.data[currentPixel + 1] = imageData.data[currentPixel + 2] = imageData.data[currentPixel]
+                imageData.data[currentPixel + 1] = imageData.data[currentPixel + 2] = imageData.data[currentPixel];
             }
-            return imageData
+            return imageData;
         },
     },
-}
+};
 
-export { algorithms }
+export { algorithms };

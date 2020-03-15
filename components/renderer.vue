@@ -4,7 +4,7 @@
         <img ref="targetimg"
              src
              alt="">
-        <svg id="svg1" />
+        <svg ref="svg1" />
         <a id="dl"
            hidden
            href="#"
@@ -36,17 +36,17 @@
 
 <script>
 // import { defaultData } from '~/mixins/defaultData';
-import { algorithms } from '~/mixins/algorithms'
+import { algorithms } from '~/mixins/algorithms';
 
 export default {
     mixins: [algorithms],
     props: {
         settings: {
-            type: Object | null,
+            type: Object,
             required: true,
         },
     },
-    data () {
+    data() {
         return {
             fontbase: 16,
             imageData: null,
@@ -54,167 +54,168 @@ export default {
             hide: false,
             canvasWidth: this.settings && this.settings.canvasWidth ? this.settings.canvasWidth : 1,
             canvasHeight: this.settings && this.settings.canvasHeight ? this.settings.canvasHeight : 1,
-        }
+        };
     },
     watch: {
-        settings () {
-            this.fireChange()
+        settings() {
+            this.fireChange();
         },
     },
-    mounted () {
+    mounted() {
         if (this.settings) {
-            this.resizeCanvas()
+            this.resizeCanvas();
             window.addEventListener('resize', () => {
-                this.resizeCanvas()
-            })
+                this.resizeCanvas();
+            });
         }
     },
     methods: {
-        getCanvasWidth (dimensions) {
-            console.log(dimensions)
+        getCanvasWidth(dimensions) {
+            console.log(dimensions);
             switch (JSON.parse(dimensions)) {
             case 1:
-                return this.getPxFromCm(15)
+                return this.getPxFromCm(15);
             case 2:
-                return this.getPxFromCm(21)
+                return this.getPxFromCm(21);
             case 0:
             default:
-                return window.innerWidth
+                return window.innerWidth;
             }
         },
-        getCanvasHeight (dimensions) {
-            console.log(dimensions)
+        getCanvasHeight(dimensions) {
+            console.log(dimensions);
             switch (JSON.parse(dimensions)) {
             case 1:
-                return this.getPxFromCm(10)
+                return this.getPxFromCm(10);
             case 2:
-                return this.getPxFromCm(29.7)
+                return this.getPxFromCm(29.7);
             case 0:
             default:
-                return window.innerHeight
+                return window.innerHeight;
             }
         },
-        getPxFromCm (cm) {
-            return (cm / 2.54) * 96
+        getPxFromCm(cm) {
+            return (cm / 2.54) * 96;
         },
-        insertMessage (settings, message) {
-            console.log(settings, 'a')
-            const ctx = this.$refs.canvas.getContext('2d')
-            const matrix = svg1.createSVGMatrix()
+        insertMessage(settings, message) {
+            console.log(settings, 'a');
+            const ctx = this.$refs.canvas.getContext('2d');
+            const matrix = this.$refs.svg1.createSVGMatrix();
             // Clear the canvas
-            ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+            ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             // Insert stuff into canvas
-            ctx.textAlign = 'center'
-            ctx.textBaseline = 'middle'
-            const x = this.canvasWidth / (window.devicePixelRatio * 2)
-            const y = (this.canvasHeight / (window.devicePixelRatio * 2))
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const x = this.canvasWidth / (window.devicePixelRatio * 2);
+            const y = this.canvasHeight / (window.devicePixelRatio * 2);
 
             switch (settings.background) {
             case 'usePattern':
                 if (settings.pattern) {
-                    const texture = document.querySelector(`[data-img="${settings.pattern}"]`)
-                    pFill = ctx.createPattern(texture, 'repeat')
-                    pFill.setTransform(matrix.scale(1 / settings.zoom))
-                    ctx.fillStyle = pFill
-                    ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight)
-                    this.finalizeBitmap(settings, ctx, message, x, y)
+                    const texture = document.querySelector(`[data-img="${ settings.pattern }"]`);
+                    const pFill = ctx.createPattern(texture, 'repeat');
+                    pFill.setTransform(matrix.scale(1 / settings.zoom));
+                    ctx.fillStyle = pFill;
+                    ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+                    this.finalizeBitmap(settings, ctx, settings.message, x, y);
                 }
-                break
+                break;
             case 'useImage':
                 if (settings.image) {
-                    const reader = new FileReader()
-                    reader.onload = (event) => {
-                        const img = new Image()
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        const img = new Image();
                         img.onload = () => {
-                            ctx.drawImage(img, x - ((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) / 2), y - (((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width) / 2), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width)
-                            this.finalizeBitmap(settings, ctx, message, x, y)
-                        }
-                        img.src = event.target.result
-                    }
+                            ctx.drawImage(img, x - ((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) / 2), y - (((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width) / 2), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width);
+                            this.finalizeBitmap(settings, ctx, settings.message, x, y);
+                        };
+                        img.src = event.target.result;
+                    };
                     if (this.$refs.image.files[0] && ['image/jpeg', 'image/png', 'image/gif'].includes(this.$refs.image.files[0].type)) {
-                        reader.readAsDataURL(this.$refs.image.files[0])
-                        break
+                        reader.readAsDataURL(this.$refs.image.files[0]);
+                        break;
                     }
                 }
+            // break omitted
             case 'useColor':
             default:
-                ctx.fillStyle = settings.backgroundColor
-                ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight)
-                this.finalizeBitmap(settings, ctx, message, x, y)
+                ctx.fillStyle = settings.backgroundColor;
+                ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+                this.finalizeBitmap(settings, ctx, settings.message, x, y);
             }
         },
-        finalizeBitmap (settings, ctx, message, x, y) {
-            ctx.fillStyle = settings.color
-            const fontSize = (settings.fontbase * settings.fontsize / settings.zoom) / window.devicePixelRatio
-            ctx.font = fontSize + 'px ' + settings.font + ', Georgia'
-            ctx.shadowColor = settings.blurColor
-            ctx.shadowOffsetX = 0
-            ctx.shadowOffsetY = 0
-            ctx.shadowBlur = settings.blur
-            ctx.fillText(message, x, y * settings.yTranslate)
-            const ditheredImage = this.monochrome(ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight), settings.treshold, settings.algorithm)
-            createImageBitmap(ditheredImage).then((ditheredImageBmp) => {
-                ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
-                ctx.drawImage(ditheredImageBmp, (-x * settings.zoom) + x, (-y * settings.zoom) + y, this.canvasWidth / window.devicePixelRatio * settings.zoom, this.canvasHeight / window.devicePixelRatio * settings.zoom)
-                this.generationDisabled = false
-            })
+        finalizeBitmap(settings, ctx, message, x, y) {
+            ctx.fillStyle = settings.color;
+            const fontSize = (settings.fontbase * settings.fontsize / settings.zoom) / window.devicePixelRatio;
+            ctx.font = `${ fontSize }px ${ settings.font }, Georgia`;
+            ctx.shadowColor = settings.blurColor;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.shadowBlur = settings.blur;
+            ctx.fillText(message, x, y * settings.yTranslate);
+            const ditheredImage = this.monochrome(ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight), settings.treshold, settings.algorithm);
+            createImageBitmap(ditheredImage).then(ditheredImageBmp => {
+                ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+                ctx.drawImage(ditheredImageBmp, (-x * settings.zoom) + x, (-y * settings.zoom) + y, this.canvasWidth / window.devicePixelRatio * settings.zoom, this.canvasHeight / window.devicePixelRatio * settings.zoom);
+                this.generationDisabled = false;
+            });
         },
-        fireChange () {
+        fireChange() {
             if (!this.generationDisabled && this.settings) {
-                this.generationDisabled = true
+                this.generationDisabled = true;
                 setTimeout(() => {
-                    this.resizeCanvas()
-                    this.insertMessage(this.settings, settings.textContent)
-                }, 50)
+                    this.resizeCanvas();
+                    this.insertMessage(this.settings);
+                }, 50);
             }
         },
-        resizeCanvas () {
-            this.canvasWidth = Math.round(this.getCanvasWidth(this.settings.dimensions))
-            this.canvasHeight = Math.round(this.getCanvasHeight(this.settings.dimensions))
-            this.$refs.canvas.setAttribute('width', this.canvasWidth)
-            this.$refs.canvas.setAttribute('height', this.canvasHeight)
-            const ctx = this.$refs.canvas.getContext('2d')
+        resizeCanvas() {
+            this.canvasWidth = Math.round(this.getCanvasWidth(this.settings.dimensions));
+            this.canvasHeight = Math.round(this.getCanvasHeight(this.settings.dimensions));
+            this.$refs.canvas.setAttribute('width', this.canvasWidth);
+            this.$refs.canvas.setAttribute('height', this.canvasHeight);
+            const ctx = this.$refs.canvas.getContext('2d');
             // Normalize coordinate system to use css pixels.
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-            ctx.imageSmoothingEnabled = false
-            ctx.mozImageSmoothingEnabled = false
-            ctx.webkitImageSmoothingEnabled = false
-            ctx.msImageSmoothingEnabled = false
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            ctx.imageSmoothingEnabled = false;
+            ctx.mozImageSmoothingEnabled = false;
+            ctx.webkitImageSmoothingEnabled = false;
+            ctx.msImageSmoothingEnabled = false;
             for (let i = 0; i < 256; i++) {
-                this.lumR[i] = i * 0.299
-                this.lumG[i] = i * 0.587
-                this.lumB[i] = i * 0.114
+                this.lumR[i] = i * 0.299;
+                this.lumG[i] = i * 0.587;
+                this.lumB[i] = i * 0.114;
             }
-            this.fireChange()
+            this.fireChange();
         },
-        download () {
-            const image = this.$refs.canvas.toDataURL('image/png')
-            const dlButton = document.querySelector('#dl')
-            dlButton.setAttribute('href', image)
-            dlButton.click()
+        download() {
+            const image = this.$refs.canvas.toDataURL('image/png');
+            const dlButton = document.querySelector('#dl');
+            dlButton.setAttribute('href', image);
+            dlButton.click();
         },
-        print () {
-            const dataUrl = this.$refs.canvas.toDataURL()
-            const printWin = window.open('', '', `width=${this.canvasWidth},height=${this.canvasHeight}`)
+        print() {
+            const dataUrl = this.$refs.canvas.toDataURL();
+            const printWindow = window.open('', '', `width=${ this.canvasWidth },height=${ this.canvasHeight }`);
             const windowContent = `<!DOCTYPE html>
                                      <html>
                                          <head><title>Print canvas</title></head>
-                                         <body style="margin:0;"><img src="${dataUrl}" alt=""></body>
-                                     </html>`
-            printWin.document.open()
-            printWin.document.write(windowContent)
-            printWin.document.querySelector('img').addEventListener('load', () => {
-                printWin.focus()
-                printWin.print()
-                printWin.close()
-            })
-            printWin.document.close()
+                                         <body style="margin:0;"><img src="${ dataUrl }" alt=""></body>
+                                     </html>`;
+            printWindow.document.open();
+            printWindow.document.write(windowContent);
+            printWindow.document.querySelector('img').addEventListener('load', () => {
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            });
+            printWindow.document.close();
         },
-        reset () {
-            Object.assign(this.$data, getDefaultData())
+        reset() {
+            // Object.assign(this.$data, getDefaultData())
         },
     },
-}
+};
 </script>
 
 <style scoped lang="scss">

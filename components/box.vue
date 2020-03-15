@@ -13,7 +13,7 @@ export default {
             default: 'left',
         },
     },
-}
+};
 </script>
 
 <style scoped lang="scss">

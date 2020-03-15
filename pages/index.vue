@@ -22,10 +22,10 @@
 </template>
 
 <script>
-import description from '~/components/description'
-import renderer from '~/components/renderer'
-import controls from '~/components/controls'
-import box from '~/components/box'
+import description from '~/components/description';
+import renderer from '~/components/renderer';
+import controls from '~/components/controls';
+import box from '~/components/box';
 
 export default {
     components: {
@@ -34,20 +34,21 @@ export default {
         controls,
         box,
     },
-    data () {
+    data() {
         return {
             settings: null,
-        }
+        };
     },
     methods: {
-        changeSettings (settings) {
-            this.settings = settings
+        changeSettings(settings) {
+            console.log(settings, 'change');
+            this.settings = settings;
         },
-        triggerAction (action) {
-            this.$refs.renderer[action]()
+        triggerAction(action) {
+            this.$refs.renderer[action]();
         },
     },
-}
+};
 </script>
 
 <style>

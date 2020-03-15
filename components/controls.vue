@@ -187,7 +187,7 @@
         <!--<div class="setting">
             <label for="gameBoyMode">GameBoyMode:</label>
             <input type="checkbox" id="gameBoyMode" v-model="gameBoyMode" />
-    </div>-->
+        </div>-->
         <div class="setting buttons">
             <button type="button"
                     class="light"
@@ -211,7 +211,7 @@
 
 export default {
     // mixins:  [defaultData],
-    data () {
+    data() {
         return {
             imageData: null,
             textContent: 'It works 😍',
@@ -230,23 +230,23 @@ export default {
             yTranslate: 1,
             algorithm: 'atkinsons',
             // gameBoyMode: false,
-        }
+        };
     },
     watch: {
         $data: {
             handler: (val, oldVal) => {
-                console.log(val)
+                console.log(val);
             },
             deep: true,
         },
     },
     methods: {
-        setImageData (value) {
-            this.image = value
-            this.imageData = this.$refs.image.files[0]
+        setImageData(value) {
+            this.image = value;
+            this.imageData = this.$refs.image.files[0];
         },
     },
-}
+};
 </script>
 
 <style scoped lang="scss">

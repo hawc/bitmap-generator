@@ -1,5 +1,5 @@
 const defaultData = {
-    data () {
+    data() {
         return {
             textContent: 'It works 😍',
             fontsize: 3,
@@ -17,8 +17,8 @@ const defaultData = {
             yTranslate: 1,
             algorithm: 'atkinsons',
             // gameBoyMode: false,
-        }
+        };
     },
-}
+};
 
-export { defaultData }
+export { defaultData };
