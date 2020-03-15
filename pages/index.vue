@@ -14,7 +14,8 @@
         </div>
         <box :position="'right'"
              :class="{ 'hidden': hide }">
-            <controls @change-settings="changeSettings"
+            <controls :key="controlsKey"
+                      @change-settings="changeSettings"
                       @action="triggerAction" />
         </box>
     </div>
@@ -37,6 +38,7 @@ export default {
         return {
             hide: false,
             settings: null,
+            controlsKey: 0,
         };
     },
     methods: {
@@ -44,7 +46,11 @@ export default {
             this.settings = settings;
         },
         triggerAction(action) {
-            this.$refs.renderer[action]();
+            if (action === 'reset') {
+                this.controlsKey = this.controlsKey + 1;
+            } else {
+                this.$refs.renderer[action]();
+            }
         },
     },
 };
