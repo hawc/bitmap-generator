@@ -26,25 +26,30 @@
     }
 
     .button {
-        display: inline-block;
-        border-radius: 4px;
-        text-decoration: none;
-        padding: 10px 30px;
-    }
-
-    .button--primary {
-        border: 1px solid #000;
+        height: 25px;
+        width: auto;
+        appearance: none;
         color: #fff;
-        &:hover {
-            background-color: #111;
+        background-color: #000;
+        border: none;
+        border-radius: 3px;
+        transition: background-color 0.3s;
+        &:not(:last-child) {
+            margin-right: 7px;
+        }
+        &--primary {
+            &:hover {
+                background-color: #222;
+            }
+        }
+
+        &--secondary {
+            color: #000;
+            background-color: #ddd;
+            &:hover {
+                background-color: #eee;
+            }
         }
     }
 
-    .button--secondary {
-        border: 1px solid #ddd;
-        color: #fff;
-        &:hover {
-            background-color: #eee;
-        }
-    }
 </style>

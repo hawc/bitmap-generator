@@ -77,26 +77,25 @@
                    step=".01">
         </div>
         <h2>Background styles</h2>
-        <div class="setting">
-            <span :class="background === 'usePattern' ? '' : 'disabled'">
-                <label for="pattern">
-                    <input
-                        id="usePattern"
-                        v-model="background"
-                        name="background"
-                        type="radio"
-                        value="usePattern">
-                    <span>Pattern:</span>
-                </label>
+        <div class="setting"
+             :class="background === 'usePattern' ? '' : 'disabled'">
+            <label for="pattern">
                 <input
-                    id="pattern"
-                    v-model="pattern"
-                    type="range"
-                    min="1"
-                    max="5"
-                    step="1"
-                    :disabled="background !== 'usePattern'">
-            </span>
+                    id="usePattern"
+                    v-model="background"
+                    name="background"
+                    type="radio"
+                    value="usePattern">
+                <span>Pattern:</span>
+            </label>
+            <input
+                id="pattern"
+                v-model="pattern"
+                type="range"
+                min="1"
+                max="5"
+                step="1"
+                :disabled="background !== 'usePattern'">
         </div>
         <div class="setting"
              :class="background === 'useColor' ? '' : 'disabled'">
@@ -190,15 +189,17 @@
         </div>-->
         <div class="setting buttons">
             <button type="button"
-                    class="light"
+                    class="button button--secondary"
                     @click="$emit('action', 'reset')">
                 Reset
             </button>
             <button type="button"
+                    class="button button--primary"
                     @click="$emit('action', 'print')">
                 Print
             </button>
             <button type="button"
+                    class="button button--primary"
                     @click="$emit('action', 'download')">
                 Download
             </button>
@@ -250,27 +251,45 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.setting {
-  font-size: 14px;
-  &:not(:last-child) {
-    margin-bottom: 10px;
-  }
-}
-input[type="checkbox"] {
-  width: 20px;
-  margin: 0;
-}
-label {
-  display: inline-block;
-  width: 110px;
-  padding-right: 10px;
-  input[type="checkbox"] + span & {
-    width: 80px;
-  }
-}
-label + * {
-  display: inline-block;
-  width: calc(100% - 110px);
-  margin: 0;
-}
+    .setting {
+        display: flex;
+        flex-direction: row;
+        font-size: 14px;
+        &:not(:last-child) {
+            margin-bottom: 10px;
+        }
+    }
+    h2 {
+        margin: 0 0 10px;
+        padding-bottom: 2px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #dedede;
+        &:not(:first-child) {
+            margin-top: 15px;
+        }
+    }
+    input[type="checkbox"] {
+        width: 20px;
+        margin: 0;
+    }
+    label {
+        display: inline-block;
+        width: 110px;
+        padding-right: 10px;
+        input[type="checkbox"] + span & {
+            width: 80px;
+        }
+    }
+    label + * {
+        display: inline-block;
+        width: calc(100% - 110px);
+        margin: 0;
+    }
+    .buttons {
+        margin-top: 16px;
+        justify-content: center;
+    }
 </style>

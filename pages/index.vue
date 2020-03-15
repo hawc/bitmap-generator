@@ -4,14 +4,6 @@
         <renderer ref="renderer"
                   :settings="settings" />
         <box>
-            <h1 class="title">
-                Bitmap Generator
-            </h1>
-            <h2>
-                A dithering playground.
-            </h2>
-        </box>
-        <box>
             <description />
         </box>
         <box :position="'right'">
