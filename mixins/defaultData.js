@@ -9,6 +9,7 @@ const defaultData = {
             background: 'useColor',
             pattern: 1,
             image: null,
+            imageData: null,
             color: '#ff0000',
             blur: 0,
             outline: 0,
