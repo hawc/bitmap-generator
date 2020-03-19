@@ -49,7 +49,6 @@ export default {
     data() {
         return {
             fontbase: 16,
-            imageData: null,
             generationDisabled: false,
             canvasWidth: this.settings && this.settings.canvasWidth ? this.settings.canvasWidth : 1,
             canvasHeight: this.settings && this.settings.canvasHeight ? this.settings.canvasHeight : 1,
@@ -120,8 +119,8 @@ export default {
                         };
                         img.src = event.target.result;
                     };
-                    if (settings.imageData && ['image/jpeg', 'image/png', 'image/gif'].includes(settings.imageData.type)) {
-                        reader.readAsDataURL(settings.imageData);
+                    if (['image/jpeg', 'image/png', 'image/gif'].includes(settings.image.type)) {
+                        reader.readAsDataURL(settings.image);
                         break;
                     }
                 }

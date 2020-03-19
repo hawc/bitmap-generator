@@ -147,7 +147,7 @@
                 type="file"
                 name="image"
                 :disabled="background !== 'useImage'"
-                @change="setImageData">
+                @change="setImage">
         </div>
         <h2>Rendering styles</h2>
         <div class="setting">
@@ -239,9 +239,8 @@
             },
         },
         methods: {
-            setImageData(value) {
-                this.image = value;
-                this.imageData = this.$refs.image.files[0];
+            setImage() {
+                this.image = this.$refs.image.files[0];
             },
         },
         mounted() {
