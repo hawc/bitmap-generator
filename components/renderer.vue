@@ -43,7 +43,7 @@ export default {
     props: {
         settings: {
             type: Object,
-            required: true,
+            default: () => {},
         },
     },
     data() {
@@ -54,6 +54,11 @@ export default {
             canvasWidth: this.settings && this.settings.canvasWidth ? this.settings.canvasWidth : 1,
             canvasHeight: this.settings && this.settings.canvasHeight ? this.settings.canvasHeight : 1,
         };
+    },
+    computed: {
+        letterSpacingPx() {
+            return `${ this.settings.letterSpacing * this.settings.fontsize }px`;
+        }
     },
     methods: {
         getCanvasWidth(dimensions) {
@@ -82,6 +87,7 @@ export default {
             return (cm / 2.54) * 96;
         },
         insertMessage(settings) {
+            this.$refs.canvas.style.letterSpacing = this.letterSpacingPx;
             const ctx = this.$refs.canvas.getContext('2d');
             const matrix = this.$refs.svg1.createSVGMatrix();
             // Clear the canvas
@@ -135,6 +141,11 @@ export default {
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             ctx.shadowBlur = settings.blur;
+            if (settings.outline) {
+                ctx.strokeStyle = settings.blurColor;
+                ctx.lineWidth = settings.outline;
+                ctx.strokeText(settings.textContent, x, y * settings.yTranslate);
+            }
             ctx.fillText(settings.textContent, x, y * settings.yTranslate);
             const ditheredImage = this.monochrome(ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight), settings.treshold, settings.algorithm);
             createImageBitmap(ditheredImage).then(ditheredImageBmp => {
