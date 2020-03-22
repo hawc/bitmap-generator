@@ -18,7 +18,7 @@ module.exports = {
         'arrow-parens': ['error', 'as-needed'],
         'semi': ['error', 'always'],
         'quotes': ['error', 'single'],
-        'indent': ['error', 4],
+        'indent': 'off',
         'comma-dangle': ['error', 'always-multiline'],
         'template-curly-spacing': ["error", "always"],
         'vue/html-indent': ['error', 4],
