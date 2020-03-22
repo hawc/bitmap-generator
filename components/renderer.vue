@@ -33,13 +33,14 @@ export default {
             backgroundImageData,
             fontbase: 16,
             generationDisabled: false,
+            canvas: null,
             canvasWidth: this.settings && this.settings.canvasWidth ? this.settings.canvasWidth : 1,
             canvasHeight: this.settings && this.settings.canvasHeight ? this.settings.canvasHeight : 1,
         };
     },
     computed: {
         letterSpacingPx() {
-            return `${ this.settings.letterSpacing * this.settings.fontsize }px`;
+            return `${ this.normalizeZoom(this.settings.letterSpacing * this.settings.fontsize) }px`;
         },
     },
     watch: {
@@ -51,10 +52,11 @@ export default {
         },
     },
     mounted() {
+        this.canvas = this.$refs.canvas;
         if (this.settings) {
-            this.resizeCanvas();
+            this.fireChange();
             window.addEventListener('resize', () => {
-                this.resizeCanvas();
+                this.fireChange();
             });
         }
     },
@@ -81,16 +83,15 @@ export default {
                 return window.innerHeight;
             }
         },
-        getCanvasCenter(horizontal = true) {
+        getCanvasCenter(horizontal = true, margin = 0) {
             const dimension = horizontal ? this.canvasWidth : this.canvasHeight;
-            return dimension / window.devicePixelRatio / 2;
+            return dimension / window.devicePixelRatio / 2 + this.normalizeZoom(dimension) / 2 * margin;
         },
         getPxFromCm(cm) {
             return (cm / 2.54) * 96;
         },
         prepareCanvas(settings) {
-            this.$refs.canvas.style.letterSpacing = this.letterSpacingPx;
-            const ctx = this.$refs.canvas.getContext('2d');
+            const ctx = this.canvas.getContext('2d');
             const matrix = this.$refs.svg1.createSVGMatrix();
             ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             const x = this.getCanvasCenter(true);
@@ -139,6 +140,7 @@ export default {
             return value / this.settings.zoom / window.devicePixelRatio;
         },
         finalizeBitmap(settings, ctx, x, y) {
+            this.canvas.style.letterSpacing = this.letterSpacingPx;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = settings.color;
@@ -151,13 +153,17 @@ export default {
             if (settings.outline) {
                 ctx.strokeStyle = settings.blurColor;
                 ctx.lineWidth = this.normalizeZoom(settings.outline);
-                ctx.strokeText(settings.textContent, x, y * settings.yTranslate);
+                ctx.strokeText(settings.textContent, x, this.getCanvasCenter(false, settings.yTranslate));
             }
-            ctx.fillText(settings.textContent, x, y * settings.yTranslate);
+            ctx.fillText(settings.textContent, x, this.getCanvasCenter(false, settings.yTranslate));
             const ditheredImage = this.monochrome(ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight), settings.treshold, settings.algorithm);
             createImageBitmap(ditheredImage).then(ditheredImageBmp => {
                 ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-                ctx.drawImage(ditheredImageBmp, (-x * settings.zoom) + x, (-y * settings.zoom) + y, this.canvasWidth / window.devicePixelRatio * settings.zoom, this.canvasHeight / window.devicePixelRatio * settings.zoom);
+                ctx.drawImage(ditheredImageBmp,
+                              (-x * settings.zoom) + x,
+                              (-y * settings.zoom) + y,
+                              this.canvasWidth * settings.zoom / window.devicePixelRatio,
+                              this.canvasHeight * settings.zoom / window.devicePixelRatio);
                 this.generationDisabled = false;
             });
         },
@@ -166,31 +172,30 @@ export default {
                 this.generationDisabled = true;
                 setTimeout(() => {
                     this.resizeCanvas();
-                    this.prepareCanvas(this.settings);
                 }, 50);
             }
         },
         resizeCanvas() {
             this.canvasWidth = Math.round(this.getCanvasWidth(this.settings.dimensions));
             this.canvasHeight = Math.round(this.getCanvasHeight(this.settings.dimensions));
-            this.$refs.canvas.setAttribute('width', this.canvasWidth);
-            this.$refs.canvas.setAttribute('height', this.canvasHeight);
-            const ctx = this.$refs.canvas.getContext('2d');
+            this.canvas.setAttribute('width', this.canvasWidth);
+            this.canvas.setAttribute('height', this.canvasHeight);
+            const ctx = this.canvas.getContext('2d');
             // Normalize coordinate system to use css pixels.
             ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
             ctx.imageSmoothingEnabled = false;
             ctx.mozImageSmoothingEnabled = false;
             ctx.webkitImageSmoothingEnabled = false;
             ctx.msImageSmoothingEnabled = false;
-            this.fireChange();
+            this.prepareCanvas(this.settings);
         },
         download() {
-            const image = this.$refs.canvas.toDataURL('image/png');
+            const image = this.canvas.toDataURL('image/png');
             this.$refs.downloadButton.setAttribute('href', image);
             this.$refs.downloadButton.click();
         },
         print() {
-            const dataUrl = this.$refs.canvas.toDataURL();
+            const dataUrl = this.canvas.toDataURL();
             const printWindow = window.open('', '', `width=${ this.canvasWidth },height=${ this.canvasHeight }`);
             const windowContent = `<!DOCTYPE html>
                                      <html>

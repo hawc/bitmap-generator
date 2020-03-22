@@ -82,7 +82,7 @@
                    v-model.number="letterSpacing"
                    type="range"
                    min="-2"
-                   max="5"
+                   max="10"
                    step=".1">
         </div>
         <div class="setting">
@@ -90,8 +90,8 @@
             <input id="yTranslate"
                    v-model.number="yTranslate"
                    type="range"
-                   min="0"
-                   max="2"
+                   min="-1"
+                   max="1"
                    step=".01">
         </div>
         <h2>Background styles</h2>

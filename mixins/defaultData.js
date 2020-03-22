@@ -16,7 +16,7 @@ const defaultData = {
             backgroundColor: '#dedede',
             treshold: 129,
             dimensions: 1,
-            yTranslate: 1,
+            yTranslate: 0,
             algorithm: 'atkinsons',
             // gameBoyMode: false,
         };
