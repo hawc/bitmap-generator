@@ -46,20 +46,20 @@
         <div class="setting">
             <label for="blur">Blur:</label>
             <input id="blur"
-                v-model.number="blur"
-                type="range"
-                min="1"
-                max="100"
-                step=".1">
+                   v-model.number="blur"
+                   type="range"
+                   min="1"
+                   max="100"
+                   step=".1">
         </div>
         <div class="setting">
             <label for="outline">Outline:</label>
             <input id="outline"
-                v-model.number="outline"
-                type="range"
-                min="0"
-                max="20"
-                step=".1">
+                   v-model.number="outline"
+                   type="range"
+                   min="0"
+                   max="20"
+                   step=".1">
         </div>
         <div class="setting">
             <label for="blurColor">Blur color:</label>
@@ -70,20 +70,20 @@
         <div class="setting">
             <label for="fontsize">Size:</label>
             <input id="fontsize"
-                v-model.number="fontsize"
-                type="range"
-                min="1"
-                max="20"
-                step=".1">
+                   v-model.number="fontsize"
+                   type="range"
+                   min="1"
+                   max="20"
+                   step=".1">
         </div>
         <div class="setting">
             <label for="letterSpacing">Letter spacing:</label>
             <input id="letterSpacing"
-                v-model.number="letterSpacing"
-                type="range"
-                min="-2"
-                max="5"
-                step=".1">
+                   v-model.number="letterSpacing"
+                   type="range"
+                   min="-2"
+                   max="5"
+                   step=".1">
         </div>
         <div class="setting">
             <label for="yTranslate">Position:</label>
@@ -226,27 +226,27 @@
 </template>
 
 <script>
-    import { defaultData } from '~/mixins/defaultData';
+import { defaultData } from '~/mixins/defaultData';
 
-    export default {
-        mixins:  [defaultData],
-        watch: {
-            $data: {
-                handler(settings) {
-                    this.$emit('change-settings', settings);
-                },
-                deep: true,
+export default {
+    mixins: [defaultData],
+    watch: {
+        $data: {
+            handler(settings) {
+                this.$emit('change-settings', settings);
             },
+            deep: true,
         },
-        methods: {
-            setImage() {
-                this.image = this.$refs.image.files[0];
-            },
+    },
+    mounted() {
+        this.$emit('change-settings', this.$data);
+    },
+    methods: {
+        setImage() {
+            this.image = this.$refs.image.files[0];
         },
-        mounted() {
-            this.$emit('change-settings', this.$data);
-        },
-    };
+    },
+};
 </script>
 
 <style scoped lang="scss">

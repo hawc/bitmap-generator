@@ -7,10 +7,10 @@
             <description />
         </box>
         <div class="hideWrapper">
-            <input type="checkbox"
-                   class="hide"
-                   id="hide"
-                   v-model="hide" />
+            <input id="hide"
+                   v-model="hide"
+                   type="checkbox"
+                   class="hide">
         </div>
         <box :position="'right'"
              :class="{ 'hidden': hide }">
