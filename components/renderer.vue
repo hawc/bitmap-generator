@@ -81,20 +81,20 @@ export default {
                 return window.innerHeight;
             }
         },
+        getCanvasCenter(horizontal = true) {
+            const dimension = horizontal ? this.canvasWidth : this.canvasHeight;
+            return dimension / window.devicePixelRatio / 2;
+        },
         getPxFromCm(cm) {
             return (cm / 2.54) * 96;
         },
-        insertMessage(settings) {
+        prepareCanvas(settings) {
             this.$refs.canvas.style.letterSpacing = this.letterSpacingPx;
             const ctx = this.$refs.canvas.getContext('2d');
             const matrix = this.$refs.svg1.createSVGMatrix();
-            // Clear the canvas
             ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-            // Insert stuff into canvas
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            const x = this.canvasWidth / (window.devicePixelRatio * 2);
-            const y = this.canvasHeight / (window.devicePixelRatio * 2);
+            const x = this.getCanvasCenter(true);
+            const y = this.getCanvasCenter(false);
 
             switch (settings.background) {
             case 'usePattern':
@@ -113,7 +113,11 @@ export default {
                     reader.onload = event => {
                         const img = new Image();
                         img.onload = () => {
-                            ctx.drawImage(img, x - ((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) / 2), y - (((this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width) / 2), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)), (this.canvasWidth / (window.devicePixelRatio * settings.zoom)) * img.height / img.width);
+                            ctx.drawImage(img,
+                                          x - (this.normalizeZoom(this.canvasWidth) / 2),
+                                          y - (this.normalizeZoom(this.canvasWidth) * img.height / img.width) / 2,
+                                          this.normalizeZoom(this.canvasWidth),
+                                          this.normalizeZoom(this.canvasWidth) * img.height / img.width);
                             this.finalizeBitmap(settings, ctx, x, y);
                         };
                         img.src = event.target.result;
@@ -131,17 +135,22 @@ export default {
                 this.finalizeBitmap(settings, ctx, x, y);
             }
         },
+        normalizeZoom(value) {
+            return value / this.settings.zoom / window.devicePixelRatio;
+        },
         finalizeBitmap(settings, ctx, x, y) {
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = settings.color;
-            const fontSize = (this.fontbase * settings.fontsize / settings.zoom) / window.devicePixelRatio;
+            const fontSize = this.normalizeZoom(this.fontbase * settings.fontsize);
             ctx.font = `${ fontSize }px ${ settings.font }, Georgia`;
             ctx.shadowColor = settings.blurColor;
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
-            ctx.shadowBlur = settings.blur;
+            ctx.shadowBlur = this.normalizeZoom(settings.blur);
             if (settings.outline) {
                 ctx.strokeStyle = settings.blurColor;
-                ctx.lineWidth = settings.outline;
+                ctx.lineWidth = this.normalizeZoom(settings.outline);
                 ctx.strokeText(settings.textContent, x, y * settings.yTranslate);
             }
             ctx.fillText(settings.textContent, x, y * settings.yTranslate);
@@ -157,7 +166,7 @@ export default {
                 this.generationDisabled = true;
                 setTimeout(() => {
                     this.resizeCanvas();
-                    this.insertMessage(this.settings);
+                    this.prepareCanvas(this.settings);
                 }, 50);
             }
         },
