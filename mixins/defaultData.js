@@ -1,7 +1,7 @@
 const defaultData = {
     data() {
         return {
-            textContent: 'It works 😍',
+            textContent: 'Hi ✌️',
             fontsize: 3,
             font: 'Futura',
             letterSpacing: 0,
@@ -16,11 +16,16 @@ const defaultData = {
             backgroundColor: '#dedede',
             treshold: 129,
             dimensions: 1,
-            yTranslate: 0,
+            yTranslate: getRandom(-1, 1, 0.1),
             algorithm: 'atkinsons',
             // gameBoyMode: false,
         };
     },
 };
+
+function getRandom(min, max, interval = 1) {
+    const r = Math.floor(Math.random() * (max - min + interval) / interval);
+    return r * interval + min;
+}
 
 export { defaultData };

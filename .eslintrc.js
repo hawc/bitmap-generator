@@ -22,7 +22,7 @@ module.exports = {
         'comma-dangle': ['error', 'always-multiline'],
         'template-curly-spacing': ["error", "always"],
         'vue/html-indent': ['error', 4],
-        'vue/script-indent': ['error', 4],
+        'vue/script-indent': 'off',
         'vue/max-attributes-per-line': ['error', {
             'singleline': 1,
             'multiline': {
