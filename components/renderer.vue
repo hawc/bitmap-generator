@@ -168,7 +168,7 @@ export default {
             });
         },
         fireChange() {
-            if (!this.generationDisabled && this.settings) {
+            if (!this.generationDisabled) {
                 this.generationDisabled = true;
                 setTimeout(() => {
                     this.resizeCanvas();
