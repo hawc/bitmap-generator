@@ -44,30 +44,38 @@ export default {
     components: {
         control,
     },
+    props: {
+        initialized: {
+            type: Boolean,
+            required: true,
+        },
+    },
     data() {
         return {
             controlData,
-            textContent: 'Hi🖤',
-            fontsize: this.getValue('textStyles', 'fontsize'),
-            font: this.getValue('textStyles', 'font'),
-            letterSpacing: 0,
-            zoom: this.getValue('renderingStyles', 'zoom'),
-            background: 'usePattern',
-            pattern: this.getValue('backgroundStyles', 'pattern'),
-            image: null,
-            color: '#ff0000',
-            blur: 0,
-            outline: 0,
-            blurColor: '#000000',
-            backgroundColor: '#dedede',
-            treshold: 129,
-            dimensions: 1,
-            yTranslate: 0,
-            algorithm: this.getValue('renderingStyles', 'algorithm'),
+            settings: {
+                textContent: 'Hi🖤',
+                fontsize: this.getValue('textStyles', 'fontsize'),
+                font: this.getValue('textStyles', 'font'),
+                letterSpacing: 0,
+                zoom: this.getValue('renderingStyles', 'zoom'),
+                background: 'usePattern',
+                pattern: this.getValue('backgroundStyles', 'pattern'),
+                image: null,
+                color: '#ff0000',
+                blur: 0,
+                outline: 0,
+                blurColor: '#000000',
+                backgroundColor: '#dedede',
+                treshold: 129,
+                dimensions: 1,
+                yTranslate: 0,
+                algorithm: this.getValue('renderingStyles', 'algorithm'),
+            },
         };
     },
     watch: {
-        $data: {
+        settings: {
             handler(settings) {
                 this.$emit('change-settings', settings);
             },
@@ -75,9 +83,31 @@ export default {
         },
     },
     mounted() {
-        this.$emit('change-settings', this.$data);
+        if (!this.initialized) {
+            this.init();
+        } else {
+            console.log('test');
+            this.$emit('change-settings', this.settings);
+        }
     },
     methods: {
+        init() {
+            const data = window.localStorage.getItem('data');
+            if (data) {
+                const initSettings = JSON.parse(data);
+                const keys = typeof initSettings === 'object' ? Object.keys(initSettings) : false;
+                if (keys) {
+                    keys.forEach(key => {
+                        this[key] = initSettings[key];
+                    });
+                    this.$emit('mount-controls', initSettings);
+                } else {
+                    this.$emit('change-settings', this.settings);
+                }
+            } else {
+                this.$emit('change-settings', this.settings);
+            }
+        },
         getValue(category, propertyName) {
             let returnValue;
             const property = controlData[category][propertyName];
@@ -85,8 +115,9 @@ export default {
             if (property.type === 'range') {
                 returnValue = this.getRandom(property.min, property.max, property.step);
             } else if (property.type === 'select') {
-                const random = this.getRandom(0, Object.keys(property.options).length - 1, 1);
-                returnValue = Object.keys(property.options)[random];
+                const keys = Object.keys(property.options);
+                const random = this.getRandom(0, keys.length - 1);
+                returnValue = keys[random];
             }
 
             return returnValue;

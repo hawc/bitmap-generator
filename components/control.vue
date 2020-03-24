@@ -2,7 +2,7 @@
     <div class="setting">
         <label :for="name">
             <input v-if="hasBgRadio.indexOf(name) !== -1"
-                   v-model="$parent.background"
+                   v-model="$parent.settings.background"
                    :value="control.binding"
                    name="background"
                    type="radio">
@@ -10,11 +10,11 @@
         </label>
         <input v-if="inputTypes.indexOf(control.type) !== -1"
                :id="name"
-               v-model="$parent[name]"
+               v-model="$parent.settings[name]"
                :type="control.type">
         <input v-if="control.type === rangeType"
                :id="name"
-               v-model="$parent[name]"
+               v-model="$parent.settings[name]"
                :type="control.type"
                :min="control.min"
                :max="control.max"
@@ -25,7 +25,7 @@
                @change="changeFileInput">
         <select v-else-if="control.type === selectType"
                 :id="name"
-                v-model="$parent[name]">
+                v-model="$parent.settings[name]">
             <option v-for="(key, option, index) in control.options"
                     :key="index"
                     :value="option">

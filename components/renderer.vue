@@ -97,6 +97,9 @@ export default {
             const x = this.getCanvasCenter(true);
             const y = this.getCanvasCenter(false);
 
+            ctx.fillStyle = settings.background === 'useColor' ? settings.backgroundColor : '#ffffff';
+            ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+
             switch (settings.background) {
             case 'usePattern':
                 if (settings.pattern) {
@@ -131,8 +134,6 @@ export default {
             // break omitted
             case 'useColor':
             default:
-                ctx.fillStyle = settings.backgroundColor;
-                ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
                 this.finalizeBitmap(settings, ctx, x, y);
             }
         },

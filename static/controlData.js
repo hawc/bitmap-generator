@@ -72,12 +72,12 @@ const controlData = {
             binding: 'usePattern',
         },
         backgroundColor: {
-            title: 'Background Color',
+            title: 'Color',
             type: 'color',
             binding: 'useColor',
         },
         image: {
-            title: 'Background Image',
+            title: 'Image',
             type: 'file',
             binding: 'useImage',
         },

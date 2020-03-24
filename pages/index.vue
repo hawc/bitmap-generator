@@ -15,7 +15,9 @@
         <box :position="'right'"
              :class="{ 'hidden': hide }">
             <controls :key="controlsKey"
+                      :initialized="initialized"
                       @change-settings="changeSettings"
+                      @mount-controls="initRenderer"
                       @action="triggerAction" />
         </box>
     </div>
@@ -39,15 +41,22 @@ export default {
             hide: false,
             settings: null,
             controlsKey: 0,
+            initialized: false,
         };
     },
     methods: {
-        changeSettings(settings) {
+        initRenderer(settings) {
+            this.initialized = true;
             this.settings = settings;
         },
+        changeSettings(settings) {
+            this.settings = settings;
+            window.localStorage.setItem('data', JSON.stringify(settings));
+        },
         triggerAction(action) {
+            this.initialized = true;
             if (action === 'reset') {
-                this.controlsKey = this.controlsKey + 1;
+                this.controlsKey++;
             } else {
                 this.$refs.renderer[action]();
             }
