@@ -21,14 +21,14 @@
                :step="control.step">
         <input v-if="control.type === imageType"
                :id="name"
-               @change="changeFileInput"
-               :type="control.type">
+               :type="control.type"
+               @change="changeFileInput">
         <select v-else-if="control.type === selectType"
                 :id="name"
                 v-model="$parent[name]">
             <option v-for="(key, option, index) in control.options"
-                    :value="option"
-                    :key="index">
+                    :key="index"
+                    :value="option">
                 {{ key }}
             </option>
         </select>

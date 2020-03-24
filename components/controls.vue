@@ -2,20 +2,20 @@
     <div v-if="controlData">
         <h2>Text styles</h2>
         <control v-for="(control, name, index) in controlData.textStyles"
+                 :key="index"
                  :control="control"
-                 :name="name"
-                 :key="index" />
+                 :name="name" />
         <h2>Background styles</h2>
         <control v-for="(control, name, index) in controlData.backgroundStyles"
+                 :key="index"
                  :control="control"
                  :name="name"
-                 :key="index"
                  @set-image="setImage" />
         <h2>Rendering styles</h2>
         <control v-for="(control, name, index) in controlData.renderingStyles"
+                 :key="index"
                  :control="control"
-                 :name="name"
-                 :key="index" />
+                 :name="name" />
         <div class="setting buttons">
             <button type="button"
                     class="button button--secondary"
