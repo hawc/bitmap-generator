@@ -44,7 +44,7 @@ const controlData = {
             title: 'Font Size',
             type: 'range',
             min: 1,
-            max: 20,
+            max: 18,
             step: 0.1,
         },
         letterSpacing: {

@@ -2,18 +2,18 @@
     <div v-if="controlData">
         <h2>Text styles</h2>
         <control v-for="(control, name, index) in controlData.textStyles"
-                 :key="index"
+                 :key="`textStyles${ index }`"
                  :control="control"
                  :name="name" />
         <h2>Background styles</h2>
         <control v-for="(control, name, index) in controlData.backgroundStyles"
-                 :key="index"
+                 :key="`backgroundStyles${ index }`"
                  :control="control"
                  :name="name"
                  @set-image="setImage" />
         <h2>Rendering styles</h2>
         <control v-for="(control, name, index) in controlData.renderingStyles"
-                 :key="index"
+                 :key="`renderingStyles${ index }`"
                  :control="control"
                  :name="name" />
         <div class="setting buttons">
@@ -47,29 +47,28 @@ export default {
     data() {
         return {
             controlData,
-            textContent: 'Hi ✌️',
+            textContent: 'Hi🖤',
             fontsize: this.getValue('textStyles', 'fontsize'),
-            font: 'Futura',
+            font: this.getValue('textStyles', 'font'),
             letterSpacing: 0,
             zoom: this.getValue('renderingStyles', 'zoom'),
             background: 'usePattern',
             pattern: this.getValue('backgroundStyles', 'pattern'),
             image: null,
             color: '#ff0000',
-            blur: this.getValue('textStyles', 'blur'),
-            outline: this.getValue('textStyles', 'outline'),
+            blur: 0,
+            outline: 0,
             blurColor: '#000000',
             backgroundColor: '#dedede',
             treshold: 129,
             dimensions: 1,
-            yTranslate: this.getValue('textStyles', 'yTranslate'),
-            algorithm: 'atkinsons',
+            yTranslate: 0,
+            algorithm: this.getValue('renderingStyles', 'algorithm'),
         };
     },
     watch: {
         $data: {
             handler(settings) {
-                console.log('set', settings);
                 this.$emit('change-settings', settings);
             },
             deep: true,
@@ -79,11 +78,22 @@ export default {
         this.$emit('change-settings', this.$data);
     },
     methods: {
-        getValue(category, property) {
-            return this.getRandom(controlData[category][property].min, controlData[category][property].max, controlData[category][property].step);
+        getValue(category, propertyName) {
+            let returnValue;
+            const property = controlData[category][propertyName];
+
+            if (property.type === 'range') {
+                returnValue = this.getRandom(property.min, property.max, property.step);
+            } else if (property.type === 'select') {
+                const random = this.getRandom(0, Object.keys(property.options).length - 1, 1);
+                returnValue = Object.keys(property.options)[random];
+            }
+
+            return returnValue;
         },
         getRandom(min, max, interval = 1) {
             const r = Math.floor(Math.random() * (max - min + interval) / interval);
+
             return r * interval + min;
         },
         setImage(data) {
