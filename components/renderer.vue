@@ -92,11 +92,16 @@ export default {
         },
         prepareCanvas(settings) {
             const ctx = this.canvas.getContext('2d');
-            const matrix = this.$refs.svg1.createSVGMatrix();
             ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             const x = this.getCanvasCenter(true);
             const y = this.getCanvasCenter(false);
-
+            this.addBackgroundToCanvas(settings, ctx, x, y);
+        },
+        normalizeZoom(value) {
+            return value / this.settings.zoom / window.devicePixelRatio;
+        },
+        addBackgroundToCanvas(settings, ctx, x, y) {
+            const matrix = this.$refs.svg1.createSVGMatrix();
             ctx.fillStyle = settings.background === 'useColor' ? settings.backgroundColor : '#ffffff';
             ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 
@@ -108,7 +113,7 @@ export default {
                     pFill.setTransform(matrix.scale(1 / settings.zoom));
                     ctx.fillStyle = pFill;
                     ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-                    this.finalizeBitmap(settings, ctx, x, y);
+                    this.addContentToCanvas(settings, ctx, x, y);
                 }
                 break;
             case 'useImage':
@@ -122,7 +127,7 @@ export default {
                                           y - (this.normalizeZoom(this.canvasWidth) * img.height / img.width) / 2,
                                           this.normalizeZoom(this.canvasWidth),
                                           this.normalizeZoom(this.canvasWidth) * img.height / img.width);
-                            this.finalizeBitmap(settings, ctx, x, y);
+                            this.addContentToCanvas(settings, ctx, x, y);
                         };
                         img.src = event.target.result;
                     };
@@ -134,13 +139,10 @@ export default {
             // break omitted
             case 'useColor':
             default:
-                this.finalizeBitmap(settings, ctx, x, y);
+                this.addContentToCanvas(settings, ctx, x, y);
             }
         },
-        normalizeZoom(value) {
-            return value / this.settings.zoom / window.devicePixelRatio;
-        },
-        finalizeBitmap(settings, ctx, x, y) {
+        addContentToCanvas(settings, ctx, x, y) {
             this.canvas.style.letterSpacing = this.letterSpacingPx;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -157,6 +159,9 @@ export default {
                 ctx.strokeText(settings.textContent, x, this.getCanvasCenter(false, settings.yTranslate));
             }
             ctx.fillText(settings.textContent, x, this.getCanvasCenter(false, settings.yTranslate));
+            this.finalizeBitmap(settings, ctx, x, y);
+        },
+        finalizeBitmap(settings, ctx, x, y) {
             const ditheredImage = this.monochrome(ctx.getImageData(0, 0, this.canvasWidth, this.canvasHeight), settings.treshold, settings.algorithm);
             createImageBitmap(ditheredImage).then(ditheredImageBmp => {
                 ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
