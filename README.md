@@ -1,6 +1,12 @@
 # bitmap-generator
 
-> This tool comes in handy for creating duotone bitmaps, especially as a basis for screen print designs. You can directly print your dithered bitmap to inkjet film and start preparing your silk-screen.
+*dither* till you *shiver*
+
+https://bitmap-generator.hawc.de
+
+This tool is used for creating duotone bitmaps, especially as a basis for screen print designs.
+
+You can directly print your dithered bitmap to inkjet film and start preparing your silk-screen.
 
 ## Build Setup
 
