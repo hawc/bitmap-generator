@@ -54,7 +54,7 @@ export default {
         return {
             controlData,
             settings: {
-                textContent: 'Hi🖤',
+                textContent: 'What's up? ✨',
                 fontsize: this.getValue('textStyles', 'fontsize'),
                 font: this.getValue('textStyles', 'font'),
                 letterSpacing: 0,
@@ -68,7 +68,7 @@ export default {
                 blurColor: '#000000',
                 backgroundColor: '#dedede',
                 treshold: 129,
-                dimensions: 1,
+                dimensions: 0,
                 yTranslate: 0,
                 algorithm: this.getValue('renderingStyles', 'algorithm'),
             },
