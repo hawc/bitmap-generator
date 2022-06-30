@@ -54,7 +54,7 @@ export default {
         return {
             controlData,
             settings: {
-                textContent: 'What's up? ✨',
+                textContent: "What's up? ✨",
                 fontsize: this.getValue('textStyles', 'fontsize'),
                 font: this.getValue('textStyles', 'font'),
                 letterSpacing: 0,
